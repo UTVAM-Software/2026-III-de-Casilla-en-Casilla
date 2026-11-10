@@ -1,48 +1,507 @@
-{% load static %} 
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09090e">
     <title>{% block title %}De Casilla en Casilla{% endblock %}</title>
-    
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'usuarios/css/main.css' %}">
+    <style>
+        :root {
+            color-scheme: dark;
+            --page-bg: #09090e;
+            --glass-bg: rgba(18, 18, 30, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --neon-magenta: #ec4899;
+            --neon-purple: #a855f7;
+            --neon-cyan: #06b6d4;
+            --neon-blue: #3b82f6;
+            --neon-orange: #f97316;
+            --neon-green: #22c55e;
+            --text-main: #f5f3ff;
+            --text-muted: #a7a5b8;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: var(--page-bg);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--text-main);
+            background-color: var(--page-bg);
+            background-image:
+                radial-gradient(ellipse at 12% 8%, rgba(168, 85, 247, 0.15), transparent 34rem),
+                radial-gradient(ellipse at 88% 30%, rgba(6, 182, 212, 0.11), transparent 32rem),
+                linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+            background-size: auto, auto, 42px 42px, 42px 42px;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        a {
+            color: #67e8f9;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            color: #c4b5fd;
+        }
+
+        .topbar {
+            position: relative;
+            z-index: 2;
+            width: min(100% - 32px, 1200px);
+            margin: 20px auto 0;
+            padding: 14px 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+        }
+
+        .topbar-inner,
+        .brand-lockup,
+        .topbar-meta,
+        .account-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .topbar-inner {
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand-lockup {
+            min-width: 0;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            background: linear-gradient(145deg, rgba(236, 72, 153, 0.28), rgba(6, 182, 212, 0.22));
+            box-shadow: 0 0 24px rgba(168, 85, 247, 0.2), inset 0 1px rgba(255, 255, 255, 0.2);
+            font-size: 23px;
+        }
+
+        .brand-title {
+            display: block;
+            max-width: 100%;
+            color: var(--text-main);
+            font-size: 21px;
+            font-weight: 700;
+            line-height: 1.1;
+            text-decoration: none;
+        }
+
+        .brand-caption {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .text-gradient-rainbow {
+            color: transparent;
+            background: linear-gradient(90deg, #f9a8d4, #c4b5fd, #67e8f9, #86efac, #f9a8d4);
+            background-size: 220% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowShift 7s linear infinite;
+        }
+
+        .topbar-meta {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            min-height: 30px;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border: 1px solid rgba(103, 232, 249, 0.3);
+            border-radius: 50px;
+            color: #d7fbff;
+            background: rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.08), inset 0 1px rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-pill.badge-level {
+            border-color: rgba(236, 72, 153, 0.35);
+            color: #ffd2e8;
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .account-actions {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .account-greeting {
+            color: #e9e5f5;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .account-greeting:hover {
+            color: #67e8f9;
+        }
+
+        .pill-btn {
+            display: inline-flex;
+            min-height: 40px;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 50px;
+            color: #fff;
+            background: linear-gradient(115deg, var(--neon-cyan), var(--neon-blue));
+            box-shadow: 0 5px 0 rgba(22, 72, 145, 0.7), 0 9px 24px rgba(6, 182, 212, 0.22), inset 0 1px rgba(255, 255, 255, 0.3);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-decoration: none;
+            transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+            cursor: pointer;
+        }
+
+        .pill-btn:hover {
+            color: #fff;
+            filter: brightness(1.12);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 0 rgba(22, 72, 145, 0.62), 0 14px 30px rgba(6, 182, 212, 0.32), inset 0 1px rgba(255, 255, 255, 0.34);
+        }
+
+        .pill-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 0 rgba(22, 72, 145, 0.7), 0 5px 14px rgba(6, 182, 212, 0.18);
+        }
+
+        .pill-btn.pill-btn-quiet {
+            border-color: rgba(255, 255, 255, 0.22);
+            color: #f5f3ff;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.12);
+        }
+
+        .pill-btn.pill-btn-warm {
+            color: #fff;
+            background: linear-gradient(115deg, var(--neon-orange), var(--neon-magenta));
+            box-shadow: 0 5px 0 rgba(132, 43, 82, 0.72), 0 9px 24px rgba(236, 72, 153, 0.18), inset 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .main-container {
+            width: min(100% - 32px, 1200px);
+            flex: 1 0 auto;
+            margin: 0 auto;
+            padding: clamp(30px, 6vw, 72px) 0;
+        }
+
+        .glass-card {
+            position: relative;
+            isolation: isolate;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 24px 40px rgba(0, 0, 0, 0.38), inset 0 1px rgba(255, 255, 255, 0.07);
+        }
+
+        .neon-border-glow::before {
+            position: absolute;
+            z-index: -1;
+            inset: -3px;
+            border-radius: inherit;
+            background: linear-gradient(125deg, var(--neon-magenta), var(--neon-purple), var(--neon-cyan), var(--neon-magenta));
+            background-size: 260% 260%;
+            content: "";
+            filter: blur(13px);
+            opacity: 0.55;
+            animation: pulseGlow 6s ease-in-out infinite, rainbowShift 9s linear infinite;
+        }
+
+        .footer-glass {
+            width: min(100% - 32px, 1200px);
+            margin: 0 auto 20px;
+            padding: 16px 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            color: var(--text-muted);
+            background: rgba(18, 18, 30, 0.68);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .footer-glass p {
+            margin: 0;
+        }
+
+        .footer-glass strong {
+            color: #e9e5f5;
+            font-weight: 600;
+        }
+
+        .caja-sombra,
+        .card {
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text-main);
+            background: var(--glass-bg);
+            box-shadow: 0 24px 40px rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .form-control,
+        .form-select {
+            border-color: rgba(255, 255, 255, 0.18);
+            color: var(--text-main);
+            background-color: rgba(7, 7, 15, 0.7);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--neon-cyan);
+            color: #fff;
+            background-color: rgba(7, 7, 15, 0.86);
+            box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.18);
+        }
+
+        .form-control::placeholder {
+            color: #918da3;
+        }
+
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .wrong-answer-cross {
+            position: fixed;
+            z-index: 1000;
+            top: -48px;
+            color: #ff344f;
+            filter: drop-shadow(0 0 7px rgba(255, 52, 79, 0.72));
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
+            animation: wrongAnswerFall var(--fall-duration, 2.8s) linear forwards;
+        }
+
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                opacity: 0.38;
+                filter: blur(11px);
+            }
+            50% {
+                opacity: 0.82;
+                filter: blur(17px);
+            }
+        }
+
+        @keyframes rainbowShift {
+            to {
+                background-position: 220% center;
+            }
+        }
+
+        @keyframes wrongAnswerFall {
+            to {
+                transform: translate3d(var(--fall-drift, 0px), 110vh, 0) rotate(var(--fall-rotation, 240deg));
+                opacity: 0.15;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .topbar-inner {
+                flex-wrap: wrap;
+            }
+
+            .topbar-meta {
+                order: 3;
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .account-actions {
+                margin-left: auto;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .topbar {
+                width: min(100% - 20px, 1200px);
+                margin-top: 10px;
+                padding: 13px;
+                border-radius: 18px;
+            }
+
+            .brand-lockup {
+                gap: 10px;
+            }
+
+            .brand-mark {
+                width: 38px;
+                height: 38px;
+                flex-basis: 38px;
+                border-radius: 13px;
+                font-size: 20px;
+            }
+
+            .brand-title {
+                font-size: 17px;
+            }
+
+            .brand-caption {
+                font-size: 11px;
+            }
+
+            .account-actions {
+                gap: 6px;
+            }
+
+            .account-greeting {
+                display: none;
+            }
+
+            .pill-btn {
+                min-height: 36px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .main-container {
+                width: min(100% - 20px, 1200px);
+                padding: 28px 0 40px;
+            }
+
+            .footer-glass {
+                width: min(100% - 20px, 1200px);
+                margin-bottom: 10px;
+                padding: 13px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
+    <header class="topbar">
+        <nav class="topbar-inner" aria-label="Navegación principal">
+            <a class="brand-lockup" href="#inicio" aria-label="De Casilla en Casilla, inicio">
+                <span class="brand-mark" aria-hidden="true">♟</span>
+                <span>
+                    <span class="brand-title text-gradient-rainbow">De Casilla en Casilla</span>
+                    <span class="brand-caption">Aprender también es jugar</span>
+                </span>
+            </a>
 
-            <a class="navbar-brand brand-title text-white fw-bold" href="#">De Casilla en Casilla</a>
-            <div class="d-flex align-items-center">
+
+            <div class="account-actions">
                 {% if request.user.is_authenticated %}
-
-                    <a href="{% url 'perfil_usuario' %}" class="text-white text-decoration-none me-3">
-                        👋 Hola, {{ request.user.username }}
-                    </a>
+                    <a href="{% url 'perfil_usuario' %}" class="account-greeting">Hola, {{ request.user.username }}</a>
                     {% if request.user.rol == 'admin' or request.user.rol == 'lectura' or request.user.rol == 'creador' or request.user.is_superuser %}
-                        <a href="{% url 'panel_usuarios_lista' %}" class="btn btn-warning btn-sm me-2">Panel de Control</a>
+                        <a href="{% url 'panel_usuarios_lista' %}" class="pill-btn pill-btn-warm">Panel de control</a>
                     {% endif %}
-                    
                     <form method="post" action="{% url 'logout' %}" class="m-0">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
+                        <button type="submit" class="pill-btn pill-btn-quiet">Cerrar sesión</button>
                     </form>
-                    
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Entrar</a>
-                    <a href="{% url 'registro' %}" class="btn btn-primary btn-sm">Registrarse</a>
-                    
+                    <a href="{% url 'login' %}" class="pill-btn pill-btn-quiet">Entrar</a>
+                    <a href="{% url 'registro' %}" class="pill-btn">Registrarse</a>
                 {% endif %}
             </div>
-        </div>
-    </nav>
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+        </nav>
+    </header>
+
+    <main id="inicio" class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-glass">
+        <p>© {% now "Y" %} <strong>De Casilla en Casilla</strong> · UTVAM · Ingeniería en Desarrollo de Software</p>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        function triggerWrongAnswerEffect() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            const crossCount = 22;
+            for (let index = 0; index < crossCount; index += 1) {
+                const cross = document.createElement('span');
+                cross.className = 'wrong-answer-cross';
+                cross.textContent = '✕';
+                cross.setAttribute('aria-hidden', 'true');
+                cross.style.left = `${Math.random() * 100}vw`;
+                cross.style.setProperty('--fall-duration', `${2 + Math.random() * 1.8}s`);
+                cross.style.setProperty('--fall-drift', `${Math.random() * 120 - 60}px`);
+                cross.style.setProperty('--fall-rotation', `${Math.random() * 520 - 260}deg`);
+                cross.style.animationDelay = `${Math.random() * 0.7}s`;
+                cross.style.fontSize = `${20 + Math.random() * 20}px`;
+                document.body.appendChild(cross);
+                window.setTimeout(() => cross.remove(), 5000);
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
