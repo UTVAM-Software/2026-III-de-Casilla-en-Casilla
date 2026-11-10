@@ -1,0 +1,35 @@
+{% extends 'usuarios/base.html' %}
+
+{% block title %}Mi Perfil | De Casilla en Casilla{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 mt-4">
+        <div class="caja-sombra text-center">
+            <h1 class="display-5 text-primary mb-3">¡Bienvenido, {{ request.user.username }}!</h1>
+            <p class="lead">Nos alegra tenerte en <strong>De Casilla en Casilla</strong>.</p>
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-4">Tus Datos Personales</h4>
+            
+            <div class="row text-start justify-content-center">
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Usuario:</strong> {{ request.user.username }}</li>
+                        <li class="list-group-item"><strong>Correo:</strong> {{ request.user.email }}</li>
+                        <li class="list-group-item"><strong>Teléfono:</strong> {{ request.user.telefono|default:"No registrado" }}</li>
+                        <li class="list-group-item"><strong>Tipo de cuenta:</strong> <span class="badge bg-primary">{{ request.user.get_rol_display }}</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Si más adelante agregas puntuaciones o niveles del juego, los puedes mostrar aquí -->
+            <div class="mt-5">
+                <button class="btn btn-success btn-lg">Jugar Ahora</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

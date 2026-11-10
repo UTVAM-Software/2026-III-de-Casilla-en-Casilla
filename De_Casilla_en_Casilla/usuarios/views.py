@@ -3,6 +3,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from .models import Usuario
 from .forms import RegistroPublicoForm, UsuarioAdminCreationForm
@@ -74,3 +77,7 @@ class PanelUsuarioDeleteView(SoloAdminMixin, DeleteView):
     model = Usuario
     template_name = 'usuarios/panel/confirmar_borrado.html'
     success_url = reverse_lazy('panel_usuarios_lista')
+
+
+class PerfilUsuarioView(LoginRequiredMixin, TemplateView):
+    template_name = 'usuarios/perfil.html'
