@@ -1,0 +1,50 @@
+
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'game/css/global.css' %}">
+<link rel="stylesheet" href="{% static 'game/css/account.css' %}">
+{% endblock %}
+
+{% block title %}Alta De Alumno{% endblock %}
+
+{% block content %}
+<section class="account-page flex items-center justify-center min-h-[75vh]">
+  <div class="account-card glass-panel w-full max-w-lg p-8 rounded-3xl shadow-2xl">
+    
+    <div class="account-heading mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Alta De Alumno</h1>
+      <p class="text-gray-400 text-sm">Registra un alumno temporal para asignarlo a su respectivo equipo</p>
+    </div>
+        
+    <form method="POST" class="account-form">
+      {% csrf_token %}
+      
+      <div class="account-field">
+        <label class="block text-gray-200 font-medium text-sm">Nombre Del Alumno</label>
+        <div>
+          {{ form.nombre }}
+        </div>
+      </div>
+
+      <div class="account-field">
+        <label class="block text-gray-200 font-medium text-sm">Equipo <span class="text-gray-500 font-normal">(Opcional)</span></label>
+        <div>
+          {{ form.equipo }}
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-6 border-t border-gray-800/80 mt-8">
+         <button type="submit" class="btn-primary px-6 py-2.5 rounded-full shadow-lg">
+        <a href="{% url 'alumnos:panel' %}" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Cancelar</a>
+        </button>
+        <button type="submit" class="btn-primary px-6 py-2.5 rounded-full shadow-lg">
+          Generar Acceso
+        </button>
+      </div>
+    </form>
+
+  </div>
+</section>
+{% endblock %}

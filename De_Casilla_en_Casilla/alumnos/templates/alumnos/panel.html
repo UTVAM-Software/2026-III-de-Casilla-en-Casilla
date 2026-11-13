@@ -1,0 +1,115 @@
+
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'game/css/global.css' %}">
+<link rel="stylesheet" href="{% static 'game/css/account.css' %}">
+{% endblock %}
+
+{% block title %}Panel Del Profesor{% endblock %}
+
+{% block content %}
+<section class="account-page">
+  <div class="account-card glass-panel">
+    
+    <div class="account-heading flex justify-between items-center mb-8 flex-wrap gap-4">
+      <h1 class="text-3xl font-bold">Panel Del Profesor</h1>
+      <div class="flex gap-4">
+        <a href="{% url 'alumnos:crear_equipo' %}" class="btn-primary"> Crear Equipo</a>
+        <a href="{% url 'alumnos:crear_alumno' %}" class="btn-primary"> Dar De Alta A Alumno</a>
+      </div>
+    </div>
+        
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700 backdrop-blur-md">
+        <h2 class="text-lg text-gray-400">Partidas Jugadas</h2>
+        <p class="text-4xl font-bold text-cyan-400 mt-2">{{ estadisticas.total_partidas|default:"0" }}</p>
+      </div>
+      <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700 backdrop-blur-md">
+        <h2 class="text-lg text-gray-400">Promedio Del Puntaje</h2>
+        <p class="text-4xl font-bold text-purple-400 mt-2">{{ estadisticas.promedio_puntaje|default:"0"|floatformat:1 }}</p>
+      </div>
+      <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700 backdrop-blur-md">
+        <h2 class="text-lg text-gray-400">Metas Alcanzadas</h2>
+        <p class="text-4xl font-bold text-green-400 mt-2">{{ estadisticas.total_completadas|default:"0" }}</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <div class="account-table-wrap bg-gray-900/40 p-6 rounded-xl border border-gray-800">
+        <h3 class="text-2xl font-bold mb-4 text-cyan-300">Mis Equipos</h3>
+        
+        <div class="mb-4">
+          <input type="text" id="buscadorEquipos" data-table-search="tablaEquiposBody" placeholder="Buscar equipo por nombre..." class="w-full bg-gray-900/60 border border-indigo-900/50 rounded-full px-6 py-2.5 text-white text-sm outline-none focus:border-cyan-400">
+        </div>
+
+        <table class="account-table w-full">
+          <thead>
+            <tr>
+              <th>Nombre Del Equipo</th>
+              <th class="text-right">Alumnos</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEquiposBody">
+            {% for equipo in equipos %}
+              <tr data-search-row>
+                <td class="font-semibold">{{ equipo.nombre }}</td>
+                <td class="text-right"><span class="account-badge">{{ equipo.alumnos.count }} alumnos</span></td>
+              </tr>
+            {% empty %}
+              <tr data-empty-state>
+                <td colspan="2" class="text-gray-500 py-4">Aun no has creado ningun equipo</td>
+              </tr>
+            {% endfor %}
+            <tr data-no-results hidden>
+              <td colspan="2" class="text-gray-500 py-4">No se encontraron equipos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="account-table-wrap bg-gray-900/40 p-6 rounded-xl border border-gray-800">
+        <h3 class="text-2xl font-bold mb-4 text-purple-300">Alumnos Temporales</h3>
+        
+        <div class="mb-4">
+          <input type="text" id="buscadorAlumnos" data-table-search="tablaAlumnosBody" placeholder="Buscar ej. nombre o codigo" class="w-full bg-gray-900/60 border border-indigo-900/50 rounded-full px-6 py-2.5 text-white text-sm outline-none focus:border-purple-400">
+        </div>
+
+        <table class="account-table w-full">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Equipo</th>
+              <th class="text-right">Codigo</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAlumnosBody">
+            {% for alumno in alumnos %}
+              <tr data-search-row>
+                <td class="font-semibold">{{ alumno.nombre }}</td>
+                <td>{{ alumno.equipo.nombre|default:"Ninguno" }}</td>
+                <td class="text-right">
+                  <span class="account-badge font-mono text-cyan-400">{{ alumno.codigo_acceso }}</span>
+                </td>
+              </tr>
+            {% empty %}
+              <tr data-empty-state>
+                <td colspan="3" class="text-gray-500 py-4">No tienes aun alumnos temporales registrados</td>
+              </tr>
+            {% endfor %}
+            <tr data-no-results hidden>
+              <td colspan="3" class="text-gray-500 py-4">No se encontraron alumnos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script src="{% static 'alumnos/js/buscadores.js' %}" defer></script>
+{% endblock %}

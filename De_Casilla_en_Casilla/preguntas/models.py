@@ -6,7 +6,7 @@ class Nivel(models.Model):
         ('ALFA', 'Alfa'),
         ('BETA', 'Beta'),
     ]
-    
+
     nombre = models.CharField(max_length=50)
     tipo = models.CharField(max_length=10, choices=TIPO_NIVEL_CHOICES, default='ALFA')
     descripcion = models.TextField(blank=True, null=True)
@@ -21,7 +21,7 @@ class Pregunta(models.Model):
     opcion_b = models.CharField(max_length=255)
     opcion_c = models.CharField(max_length=255)
     opcion_d = models.CharField(max_length=255)
-    
+
     RESPUESTAS_CHOICES = [
         ('A', 'Opción A'),
         ('B', 'Opción B'),
@@ -29,12 +29,12 @@ class Pregunta(models.Model):
         ('D', 'Opción D'),
     ]
     respuesta_correcta = models.CharField(max_length=1, choices=RESPUESTAS_CHOICES)
-    
+
     nivel = models.ForeignKey(Nivel, on_delete=models.CASCADE, related_name='preguntas')
     creador = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
         related_name='preguntas_creadas'
     )
