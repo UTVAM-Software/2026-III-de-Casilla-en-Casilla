@@ -11,6 +11,9 @@
         <a class="nav-link" href="{% url 'panel_inicio' %}">Panel</a>
         <a class="nav-link" href="{% url 'preguntas:lista_preguntas' %}">Preguntas</a>
       {% endif %}
+
+     
+      <a class="nav-link" href="{% url 'alumnos:panel' %}">Panel de Profesor</a>
       <form method="post" action="{% url 'logout' %}" class="nav-logout-form">
         {% csrf_token %}
         <button type="submit" class="nav-link nav-button">Cerrar sesión</button>
