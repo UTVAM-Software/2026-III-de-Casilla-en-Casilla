@@ -7,7 +7,10 @@
   <div class="account-card glass-panel">
     <div class="account-heading">
       <h1>Banco de preguntas</h1>
+
+      {% if request.user.is_superuser or request.user.puede_crear_preguntas %}
       <a href="{% url 'preguntas:crear_pregunta' %}" class="btn-primary">+ Nueva pregunta</a>
+      {% endif %}
     </div>
 
     <form method="get" class="account-form" style="margin-bottom: 1.5rem; flex-direction: row; align-items: flex-end; gap: 1rem;">
@@ -50,8 +53,12 @@
             </td>
             <td>{{ pregunta.creador.username|default:"Sistema" }}</td>
             <td>
+              {% if request.user.is_superuser or request.user.puede_crear_preguntas %}
               <a class="nav-link" href="{% url 'preguntas:editar_pregunta' pregunta.id %}">Editar</a>
               <a class="nav-link" href="{% url 'preguntas:eliminar_pregunta' pregunta.id %}">Borrar</a>
+              {% else %}
+               <span>Solo lectura</span>
+              {% endif %}
             </td>
           </tr>
           {% empty %}

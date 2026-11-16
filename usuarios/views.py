@@ -1,3 +1,4 @@
+from django.shortcuts import redirect, render, get_object_or_404
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -108,3 +109,22 @@ class PanelUsuarioDeleteView(SoloAdminMixin, DeleteView):
 
 class PerfilUsuarioView(LoginRequiredMixin, TemplateView):
     template_name = 'usuarios/perfil.html'
+
+class VerPerfilCompletoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.is_authenticated
+            and self.request.user.puede_ver_perfiles_completos
+        )
+
+    def handle_no_permission(self):
+        return render(self.request, 'usuarios/403.html', status=403)
+
+
+class PerfilDetalleUsuarioView(VerPerfilCompletoMixin, TemplateView):
+    template_name = 'usuarios/perfil_detalle.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['usuario_detalle'] = get_object_or_404(Usuario, pk=self.kwargs['pk'])
+        return context

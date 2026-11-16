@@ -2,6 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Pregunta, Nivel
 from .forms import PreguntaForm
+from functools import wraps
+
+def requiere_permiso_preguntas(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not (request.user.is_superuser or request.user.puede_crear_preguntas):
+            return render(request, 'usuarios/403.html', status=403)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 @login_required
 def lista_preguntas(request):
@@ -13,6 +22,7 @@ def lista_preguntas(request):
     })
 
 @login_required
+@requiere_permiso_preguntas
 def crear_pregunta(request):
     if request.method == 'POST':
         form = PreguntaForm(request.POST)
@@ -29,6 +39,7 @@ def crear_pregunta(request):
     })
 
 @login_required
+@requiere_permiso_preguntas
 def editar_pregunta(request, pk):
     pregunta = get_object_or_404(Pregunta, pk=pk)
     if request.method == 'POST':
@@ -44,6 +55,7 @@ def editar_pregunta(request, pk):
     })
 
 @login_required
+@requiere_permiso_preguntas
 def eliminar_pregunta(request, pk):
     pregunta = get_object_or_404(Pregunta, pk=pk)
     if request.method == 'POST':
@@ -52,3 +64,4 @@ def eliminar_pregunta(request, pk):
     return render(request, 'preguntas/panel/confirmar_borrado.html', {
         'pregunta': pregunta
     })
+

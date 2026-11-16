@@ -47,6 +47,7 @@ class Usuario(AbstractUser):
     class Meta:
         permissions = [
             ("create_questions", "Puede crear preguntas"),
+            ("view_full_profiles", "Puede ver perfiles completos y métricas"),
         ]
 
     @property
@@ -99,3 +100,7 @@ class Usuario(AbstractUser):
     @property
     def puede_crear_preguntas(self):
         return self.has_perm("usuarios.create_questions")
+
+    @property
+    def puede_ver_perfiles_completos(self):
+        return self.is_superuser or self.has_perm("usuarios.view_full_profiles")

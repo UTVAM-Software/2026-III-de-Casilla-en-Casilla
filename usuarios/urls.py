@@ -1,7 +1,7 @@
 # usuarios/urls.py
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from .views import PerfilUsuarioView
+from .views import PerfilUsuarioView, PerfilDetalleUsuarioView
 from .views import (
     RegistroUsuarioView, IniciarSesionView, 
     PanelInicioView, PanelUsuariosListView, PanelUsuarioCreateView,
@@ -18,4 +18,5 @@ urlpatterns = [
     path('panel/usuarios/<int:pk>/editar/', PanelUsuarioUpdateView.as_view(), name='panel_usuario_editar'),
     path('panel/usuarios/<int:pk>/eliminar/', PanelUsuarioDeleteView.as_view(), name='panel_usuario_eliminar'),
     path('perfil/', PerfilUsuarioView.as_view(), name='perfil_usuario'),
+    path('perfil/<int:pk>/', PerfilDetalleUsuarioView.as_view(), name='perfil_detalle_usuario'),
 ]
